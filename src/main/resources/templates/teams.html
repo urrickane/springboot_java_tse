@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teams Management</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h1>Teams Management</h1>
+
+    <!-- Formulaire pour ajouter une équipe -->
+    <h2>Add Team</h2>
+    <form id="add-team-form">
+        <label for="team-name">Team Name:</label>
+        <input type="text" id="team-name" required>
+        <br>
+        <label for="team-city">Team City:</label>
+        <input type="text" id="team-city" required>
+        <br>
+        <button type="submit">Add Team</button>
+    </form>
+	
+	<!-- Formulaire pour modifier une équipe -->
+	<form id="edit-team-form" style="display: none;">
+		<h2>Edit Team</h2>
+		<label for="edit-team-name">New Team Name:</label>
+		<input type="text" id="edit-team-name" required>
+		<br>
+		<label for="edit-team-city">New Team City:</label>
+		<input type="text" id="edit-team-city" required>
+		<br>
+		<input type="hidden" id="edit-team-id">
+		<button type="submit">Update Team</button>
+	</form>
+
+    <!-- Liste des équipes -->
+    <h2>Teams List</h2>
+    <ul id="teams-list">
+        <!-- Les équipes seront listées ici dynamiquement -->
+    </ul>
+
+    <script>
+        const apiUrl = "http://localhost:8080/api/teams"; // Votre URL API de Spring Boot
+
+        // Ajouter une équipe
+        $("#add-team-form").submit(function(event) {
+            event.preventDefault();
+            const teamName = $("#team-name").val();
+            const teamCity = $("#team-city").val();
+
+            $.ajax({
+                url: apiUrl,
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ name: teamName, city: teamCity }),
+                success: function(response) {
+                    alert("Team added successfully!");
+                    loadTeams(); // Recharger la liste des équipes
+                    $("#team-name").val(""); // Réinitialiser le champ
+                    $("#team-city").val(""); // Réinitialiser le champ
+                },
+                error: function() {
+                    alert("Failed to add team.");
+                }
+            });
+        });
+
+        // Charger la liste des équipes
+        function loadTeams() {
+            $.get(apiUrl, function(teams) {
+                $("#teams-list").empty();
+                teams.forEach(function(team) {
+                    const teamItem = $("<li></li>").text(`${team.name} (City: ${team.city})`);
+                    const editButton = $("<button></button>").text("Edit").click(function() {
+                        showEditForm(team);
+                    });
+                    const deleteButton = $("<button></button>").text("Delete").click(function() {
+                        deleteTeam(team);
+                    });
+                    teamItem.append(editButton, deleteButton);
+                    $("#teams-list").append(teamItem);
+                });
+            });
+        }
+
+        // Montrer le formulaire de modification
+        function showEditForm(team) {
+            $("#edit-team-name").val(team.name);
+            $("#edit-team-city").val(team.city);
+			$("#edit-team-id").val(team.id);
+            $("#edit-team-form").show();
+        }
+
+        // Modifier une équipe
+        $("#edit-team-form").submit(function(event) {
+            event.preventDefault();
+			const teamId = $("#edit-team-id").val();
+            const newTeamName = $("#edit-team-name").val();
+            const newTeamCity = $("#edit-team-city").val();
+
+            $.ajax({
+                url: apiUrl + "/" + teamId,
+                method: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify({ name: newTeamName, city: newTeamCity }),
+                success: function(response) {
+                    alert("Team updated successfully!");
+                    loadTeams(); // Recharger la liste des équipes
+                    $("#edit-team-form").hide();
+					$("#edit-team-name").val("");
+                    $("#edit-team-city").val(""); // Réinitialiser le champ
+                },
+                error: function() {
+                    alert("Failed to update team.");
+                }
+            });
+        });
+
+        // Supprimer une équipe
+        function deleteTeam(team) {
+            if (confirm(`Are you sure you want to delete the team "${team.name}"?`)) {
+                $.ajax({
+                    url: apiUrl + "/" + team.id,
+                    method: "DELETE",
+                    success: function() {
+                        alert("Team deleted successfully!");
+                        loadTeams(); // Recharger la liste des équipes
+                    },
+                    error: function() {
+                        alert("Failed to delete team.");
+                    }
+                });
+            }
+        }
+
+        // Charger les équipes au démarrage
+        $(document).ready(function() {
+            loadTeams();
+			$("#edit-team-form").hide();
+        });
+    </script>
+</body>
+</html>
