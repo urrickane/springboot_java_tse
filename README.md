@@ -25,14 +25,19 @@ cd springboot_java_tse
 ```
 ### Configurer la base de données
 ```bash
-createdb -U *votre_nom_utilisateur* -h localhost -p 5432 teams_db
-pg_restore -U *votre_nom_utilisateur* -h localhost -p 5432 -d teams_db -c './dump bdd/backup_teams_db.dump'
+createdb -U *votre_nom_utilisateur* -h localhost -p *port_configuré_pour_postgresql* teams_db
+pg_restore -U *votre_nom_utilisateur* -h localhost -p *port_configuré_pour_postgresql* -d teams_db -c './dump bdd/backup_teams_db.dump'
 ```
+Remplacez *votre_nom_utilisateur* par le nom de votre identifiant super-utilisateur de postgresql. Par défaut, postgres.
+Remplacez *port_configuré_pour_postgresql* par le port utilisé par postgresql que vous avez configuré au démarrage. Par défaut, 5432.
 ### Mettre à jour les informations de connexion dans src/main/resources/application.properties
 ```bash
-spring.datasource.username=votre_nom_utilisateur
-spring.datasource.password=votre_mot_de_passe
+spring.datasource.url=jdbc:postgresql://localhost:*port_configuré_pour_postgresql*/teams_db
+spring.datasource.username=*votre_nom_utilisateur*
+spring.datasource.password=*votre_mot_de_passe*
 ```
+Remplacez *votre_nom_utilisateur* et *votre_mot_de_passe* par vos identifiants super-utilisateur de postgresql. Par défaut, postgres.
+Remplacez *port_configuré_pour_postgresql* par le port utilisé par postgresql que vous avez configuré au démarrage. Par défaut, 5432.
 ### Installer les dépendances Maven
 ```bash
 mvn clean install
