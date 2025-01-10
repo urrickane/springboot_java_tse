@@ -18,22 +18,22 @@ Ce projet est une application Spring Boot pour la gestion des équipes. Il perme
 
 ## Installation
 
-# Cloner le dépôt :
+### Cloner le dépôt :
 ```bash
 git clone https://github.com/urrickane/springboot_java_tse.git
 cd springboot_java_tse
 ```
-# Configurer la base de données
+### Configurer la base de données
 ```bash
 createdb -U *votre_nom_utilisateur* -h localhost -p 5432 teams_db
 pg_restore -U *votre_nom_utilisateur* -h localhost -p 5432 -d teams_db -c './dump bdd/backup_teams_db.dump'
 ```
-# Mettre à jour les informations de connexion dans src/main/resources/application.properties
+### Mettre à jour les informations de connexion dans src/main/resources/application.properties
 ```bash
 spring.datasource.username=votre_nom_utilisateur
 spring.datasource.password=votre_mot_de_passe
 ```
-# Installer les dépendances Maven
+### Installer les dépendances Maven
 ```bash
 mvn clean install
 ```
@@ -53,3 +53,18 @@ Puis rendez-vous à l'adresse [http://localhost:8080/teams.html](http://localhos
 | POST	  | /api/teams      | Ajoute une nouvelle équipe   | {"name": "...", "city": "..."} |
 | PUT	    | /api/teams/{id} | Modifie une équipe existante | {"name": "...", "city": "..."} |
 | DELETE  | /api/teams/{id} | Supprime une équipe par ID   | Aucun                          |
+
+## Tests
+
+### Exécuter les tests
+```bash
+mvn test
+```
+Les tests incluent :
+-Vérification de l'ajout d'une équipe.
+-Modification des informations d'une équipe.
+-Suppression d'une équipe.
+
+## Auteur
+
+Ewan Sauze
