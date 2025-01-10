@@ -61,9 +61,9 @@ Puis rendez-vous à l'adresse [http://localhost:8080/teams.html](http://localhos
 mvn test
 ```
 Les tests incluent :
--Vérification de l'ajout d'une équipe.
--Modification des informations d'une équipe.
--Suppression d'une équipe.
+- Vérification de l'ajout d'une équipe.
+- Modification des informations d'une équipe.
+- Suppression d'une équipe.
 
 ## Auteur
 
